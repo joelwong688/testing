@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Get Started</title>
+
+<!-- Meta Pixel -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+
+fbq('init', '1033036146106108');
+fbq('track', 'PageView');
+</script>
+
+</head>
+
+<body>
+
+<h1>Get Started</h1>
+
+<form id="leadForm">
+
+<input
+  type="text"
+  id="name"
+  placeholder="Name"
+  required
+>
+
+<input
+  type="tel"
+  id="phone"
+  placeholder="Phone"
+  required
+>
+
+<input
+  type="email"
+  id="email"
+  placeholder="Email"
+>
+
+<button type="submit">
+Submit
+</button>
+
+</form>
+
+<script>
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyr_8RmGkTG4XfxoaU_GDQENXJG7lIr1HQH4zxHxDM7BUQHYK_wzHpJ6LteQvXisFarjg/exec";
+
+function getParam(name) {
+    return new URLSearchParams(window.location.search).get(name) || "";
+}
+
+document.getElementById("leadForm")
+.addEventListener("submit", async function(e) {
+
+    e.preventDefault();
+
+    const data = {
+        name: document.getElementById("name").value,
+        phone: document.getElementById("phone").value,
+        email: document.getElementById("email").value,
+        utm_source: getParam("utm_source"),
+        utm_medium: getParam("utm_medium"),
+        utm_campaign: getParam("utm_campaign"),
+        utm_content: getParam("utm_content"),
+        utm_term: getParam("utm_term"),
+        fbclid: getParam("fbclid"),
+        landing_page: window.location.href
+    };
+
+    // Meta Lead Event
+    if (typeof fbq !== "undefined") {
+        fbq('track', 'Lead');
+    }
+
+    // Send to Google Sheets
+    try {
+        await fetch(GOOGLE_SCRIPT_URL, {
+            method: "POST",
+            mode: "no-cors",
+            headers: {
+                "Content-Type": "text/plain;charset=utf-8"
+            },
+            body: JSON.stringify(data)
+        });
+    } catch (error) {
+        console.error("Error sending data:", error);
+    }
+
+    alert("Thank you! We have received your information.");
+    
+    document.getElementById("leadForm").reset();
+});
+
+</script>
+
+</body>
+</html>
